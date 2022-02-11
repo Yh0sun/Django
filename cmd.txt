@@ -1,0 +1,592 @@
+Microsoft Windows [Version 10.0.22000.434]
+(c) Microsoft Corporation. All rights reserved.
+(base) C:\mypython\customerprj>python manage.py createsuperuser
+사용자 이름 (leave blank to use 'user'): django
+이메일 주소: cc@cc.com
+Password:
+Password (again):
+비밀번호가 사용자 이름와 너무 유사합니다.
+비밀번호가 너무 짧습니다. 최소 8 문자를 포함해야 합니다.
+비밀번호가 너무 일상적인 단어입니다.
+Bypass password validation and create user anyway? [y/N]: y
+Superuser created successfully.
+
+(base) C:\mypython\customerprj>python manage.py startapp customer
+
+(base) C:\mypython\customerprj>python manage.py makemigrations custom
+er
+SystemCheckError: System check identified some issues:
+
+ERRORS:
+customer.Customer.name: (fields.E120) CharFields must define a 'max_l
+ength' attribute.
+
+(base) C:\mypython\customerprj>python manage.py makemigrations custom
+er
+SystemCheckError: System check identified some issues:
+
+ERRORS:
+customer.Customer.name: (fields.E120) CharFields must define a 'max_l
+ength' attribute.
+(base) C:\mypython\customerprj>python manage.py makemigrations custom
+er
+Migrations for 'customer':
+  customer\migrations\0001_initial.py
+    - Create model Customer
+
+(base) C:\mypython\customerprj>python manage.py migrate customer
+Operations to perform:
+  Apply all migrations: customer
+Running migrations:
+  Applying customer.0001_initial... OK
+
+(base) C:\mypython\customerprj>python manage.py showmigrations custom
+er
+customer
+ [X] 0001_initial
+
+(base) C:\mypython\customerprj>python manage.py sqlmigrate customer C
+ustomer
+CommandError: Cannot find a migration matching 'Customer' from app 'c
+ustomer'. Is it in INSTALLED_APPS?
+
+(base) C:\mypython\customerprj>python manage.py sqlmigrate customer
+usage: manage.py sqlmigrate [-h] [--database DATABASE]
+                            [--backwards] [--version]
+                            [-v {0,1,2,3}] [--settings SETTINGS]
+                            [--pythonpath PYTHONPATH] [--traceback]
+                            [--no-color] [--force-color]
+                            [--skip-checks]
+                            app_label migration_name
+manage.py sqlmigrate: error: the following arguments are required: mi
+gration_name
+
+(base) C:\mypython\customerprj>python manage.py sqlmigrate customer 0
+00
+BEGIN;
+--
+-- Create model Customer
+--
+CREATE TABLE "customer_customer" ("id" integer NOT NULL PRIMARY KEY A
+UTOINCREMENT, "name" varchar(6) NOT NULL, "birthdate" date NOT NULL,
+"email" varchar(254) NOT NULL, "gender" bool NOT NULL);
+COMMIT;
+
+(base) C:\mypython\customerprj>python manage.py migrations customer
+Unknown command: 'migrations'. Did you mean showmigrations?
+Type 'manage.py help' for usage.
+
+(base) C:\mypython\customerprj>python manage.py makemigrations custom
+er
+Migrations for 'customer':
+  customer\migrations\0002_auto_20220211_1728.py
+    - Alter field name on customer
+
+(base) C:\mypython\customerprj>python manage.py migrate customer
+Operations to perform:
+  Apply all migrations: customer
+Running migrations:
+  Applying customer.0002_auto_20220211_1728... OK
+
+(base) C:\mypython\customerprj>python sqlmigrate customer 0002
+python: can't open file 'C:\mypython\customerprj\sqlmigrate': [Errno
+2] No such file or directory
+
+(base) C:\mypython\customerprj>python manage.py  sqlmigrate customer
+0002
+BEGIN;
+--
+-- Alter field name on customer
+--
+CREATE TABLE "new__customer_customer" ("id" integer NOT NULL PRIMARY
+KEY AUTOINCREMENT, "name" varchar(10000) NOT NULL, "birthdate" date N
+OT NULL, "email" varchar(254) NOT NULL, "gender" bool NOT NULL);
+INSERT INTO "new__customer_customer" ("id", "birthdate", "email", "ge
+nder", "name") SELECT "id", "birthdate", "email", "gender", "name" FR
+OM "customer_customer";
+DROP TABLE "customer_customer";
+ALTER TABLE "new__customer_customer" RENAME TO "customer_customer";
+COMMIT;
+
+(base) C:\mypython\customerprj>python manage.py shell
+Python 3.9.7 (default, Sep 16 2021, 16:59:28) [MSC v.1916 64 bit (AMD
+64)]
+Type 'copyright', 'credits' or 'license' for more information
+IPython 7.29.0 -- An enhanced Interactive Python. Type '?' for help.
+
+In [1]: Customer.object.all()
+---------------------------------------------------------------------
+
+NameError                           Traceback (most recent call last)
+
+<ipython-input-1-bfca5b9d5ea9> in <module>
+----> 1 Customer.object.all()
+
+NameError: name 'Customer' is not defined
+
+In [2]: Customer.objects.all()
+---------------------------------------------------------------------
+
+NameError                           Traceback (most recent call last)
+
+<ipython-input-2-2d85e6483379> in <module>
+----> 1 Customer.objects.all()
+
+NameError: name 'Customer' is not defined
+
+In [3]: from customer.models import Customer
+
+In [4]: Customer.objects.all()
+Out[4]: <QuerySet [<Customer: 1 monkey>, <Customer: 2 tiger>, <Custom
+er: 3 rabbit>, <Customer: 4 jame>]>
+
+In [5]: Customer.object.get(pk=2)
+---------------------------------------------------------------------
+
+AttributeError                      Traceback (most recent call last)
+
+<ipython-input-5-f9812e31fa4e> in <module>
+----> 1 Customer.object.get(pk=2)
+
+AttributeError: type object 'Customer' has no attribute 'object'
+
+In [6]: Customer.objects.get(pk=2)
+Out[6]: <Customer: 2 tiger>
+
+In [7]: Customer.objects.filter(gender=1)
+Out[7]: <QuerySet [<Customer: 2 tiger>, <Customer: 4 jame>]>
+
+In [8]: Customer.objects.filter(title_contains='o')
+---------------------------------------------------------------------
+
+FieldError                          Traceback (most recent call last)
+
+<ipython-input-8-a3b19e305338> in <module>
+----> 1 Customer.objects.filter(title_contains='o')
+
+~\anaconda3\lib\site-packages\django\db\models\manager.py in manager_
+method(self, *args, **kwargs)
+     83         def create_method(name, method):
+     84             def manager_method(self, *args, **kwargs):
+---> 85                 return getattr(self.get_queryset(), name)(*ar
+gs, **kwargs)
+     86             manager_method.__name__ = method.__name__
+     87             manager_method.__doc__ = method.__doc__
+
+~\anaconda3\lib\site-packages\django\db\models\query.py in filter(sel
+f, *args, **kwargs)
+    940         """
+    941         self._not_support_combined_queries('filter')
+--> 942         return self._filter_or_exclude(False, *args, **kwargs
+)
+    943
+    944     def exclude(self, *args, **kwargs):
+
+~\anaconda3\lib\site-packages\django\db\models\query.py in _filter_or
+_exclude(self, negate, *args, **kwargs)
+    960             clone._deferred_filter = negate, args, kwargs
+    961         else:
+--> 962             clone._filter_or_exclude_inplace(negate, *args, *
+*kwargs)
+    963         return clone
+    964
+
+~\anaconda3\lib\site-packages\django\db\models\query.py in _filter_or
+_exclude_inplace(self, negate, *args, **kwargs)
+    967             self._query.add_q(~Q(*args, **kwargs))
+    968         else:
+--> 969             self._query.add_q(Q(*args, **kwargs))
+    970
+    971     def complex_filter(self, filter_obj):
+
+~\anaconda3\lib\site-packages\django\db\models\sql\query.py in add_q(
+self, q_object)
+   1358         # So, demotion is OK.
+   1359         existing_inner = {a for a in self.alias_map if self.a
+lias_map[a].join_type == INNER}
+-> 1360         clause, _ = self._add_q(q_object, self.used_aliases)
+   1361         if clause:
+   1362             self.where.add(clause, AND)
+
+~\anaconda3\lib\site-packages\django\db\models\sql\query.py in _add_q
+(self, q_object, used_aliases, branch_negated, current_negated, allow
+_joins, split_subq, check_filterable)
+   1377         joinpromoter = JoinPromoter(q_object.connector, len(q
+_object.children), current_negated)
+   1378         for child in q_object.children:
+-> 1379             child_clause, needed_inner = self.build_filter(
+   1380                 child, can_reuse=used_aliases, branch_negated
+=branch_negated,
+   1381                 current_negated=current_negated, allow_joins=
+allow_joins,
+
+~\anaconda3\lib\site-packages\django\db\models\sql\query.py in build_
+filter(self, filter_expr, branch_negated, current_negated, can_reuse,
+ allow_joins, split_subq, reuse_with_filtered_relation, check_filtera
+ble)
+   1258         if not arg:
+   1259             raise FieldError("Cannot parse keyword query %r"
+% arg)
+-> 1260         lookups, parts, reffed_expression = self.solve_lookup
+_type(arg)
+   1261
+   1262         if check_filterable:
+
+~\anaconda3\lib\site-packages\django\db\models\sql\query.py in solve_
+lookup_type(self, lookup)
+   1084             if expression:
+   1085                 return expression_lookups, (), expression
+-> 1086         _, field, _, lookup_parts = self.names_to_path(lookup
+_splitted, self.get_meta())
+   1087         field_parts = lookup_splitted[0:len(lookup_splitted)
+- len(lookup_parts)]
+   1088         if len(lookup_parts) > 1 and not field_parts:
+
+~\anaconda3\lib\site-packages\django\db\models\sql\query.py in names_
+to_path(self, names, opts, allow_many, fail_on_missing)
+   1481                         *self._filtered_relations,
+   1482                     ])
+-> 1483                     raise FieldError("Cannot resolve keyword
+'%s' into field. "
+   1484                                      "Choices are: %s" % (nam
+e, ", ".join(available)))
+   1485                 break
+
+FieldError: Cannot resolve keyword 'title_contains' into field. Choic
+es are: birthdate, email, gender, id, name
+
+In [9]: Customer.objects.filter(name_contains='o')
+---------------------------------------------------------------------
+
+FieldError                          Traceback (most recent call last)
+
+<ipython-input-9-6288ff625689> in <module>
+----> 1 Customer.objects.filter(name_contains='o')
+
+~\anaconda3\lib\site-packages\django\db\models\manager.py in manager_
+method(self, *args, **kwargs)
+     83         def create_method(name, method):
+     84             def manager_method(self, *args, **kwargs):
+---> 85                 return getattr(self.get_queryset(), name)(*ar
+gs, **kwargs)
+     86             manager_method.__name__ = method.__name__
+     87             manager_method.__doc__ = method.__doc__
+
+~\anaconda3\lib\site-packages\django\db\models\query.py in filter(sel
+f, *args, **kwargs)
+    940         """
+    941         self._not_support_combined_queries('filter')
+--> 942         return self._filter_or_exclude(False, *args, **kwargs
+)
+    943
+    944     def exclude(self, *args, **kwargs):
+
+~\anaconda3\lib\site-packages\django\db\models\query.py in _filter_or
+_exclude(self, negate, *args, **kwargs)
+    960             clone._deferred_filter = negate, args, kwargs
+    961         else:
+--> 962             clone._filter_or_exclude_inplace(negate, *args, *
+*kwargs)
+    963         return clone
+    964
+
+~\anaconda3\lib\site-packages\django\db\models\query.py in _filter_or
+_exclude_inplace(self, negate, *args, **kwargs)
+    967             self._query.add_q(~Q(*args, **kwargs))
+    968         else:
+--> 969             self._query.add_q(Q(*args, **kwargs))
+    970
+    971     def complex_filter(self, filter_obj):
+
+~\anaconda3\lib\site-packages\django\db\models\sql\query.py in add_q(
+self, q_object)
+   1358         # So, demotion is OK.
+   1359         existing_inner = {a for a in self.alias_map if self.a
+lias_map[a].join_type == INNER}
+-> 1360         clause, _ = self._add_q(q_object, self.used_aliases)
+   1361         if clause:
+   1362             self.where.add(clause, AND)
+
+~\anaconda3\lib\site-packages\django\db\models\sql\query.py in _add_q
+(self, q_object, used_aliases, branch_negated, current_negated, allow
+_joins, split_subq, check_filterable)
+   1377         joinpromoter = JoinPromoter(q_object.connector, len(q
+_object.children), current_negated)
+   1378         for child in q_object.children:
+-> 1379             child_clause, needed_inner = self.build_filter(
+   1380                 child, can_reuse=used_aliases, branch_negated
+=branch_negated,
+   1381                 current_negated=current_negated, allow_joins=
+allow_joins,
+
+~\anaconda3\lib\site-packages\django\db\models\sql\query.py in build_
+filter(self, filter_expr, branch_negated, current_negated, can_reuse,
+ allow_joins, split_subq, reuse_with_filtered_relation, check_filtera
+ble)
+   1258         if not arg:
+   1259             raise FieldError("Cannot parse keyword query %r"
+% arg)
+-> 1260         lookups, parts, reffed_expression = self.solve_lookup
+_type(arg)
+   1261
+   1262         if check_filterable:
+
+~\anaconda3\lib\site-packages\django\db\models\sql\query.py in solve_
+lookup_type(self, lookup)
+   1084             if expression:
+   1085                 return expression_lookups, (), expression
+-> 1086         _, field, _, lookup_parts = self.names_to_path(lookup
+_splitted, self.get_meta())
+   1087         field_parts = lookup_splitted[0:len(lookup_splitted)
+- len(lookup_parts)]
+   1088         if len(lookup_parts) > 1 and not field_parts:
+
+~\anaconda3\lib\site-packages\django\db\models\sql\query.py in names_
+to_path(self, names, opts, allow_many, fail_on_missing)
+   1481                         *self._filtered_relations,
+   1482                     ])
+-> 1483                     raise FieldError("Cannot resolve keyword
+'%s' into field. "
+   1484                                      "Choices are: %s" % (nam
+e, ", ".join(available)))
+   1485                 break
+
+FieldError: Cannot resolve keyword 'name_contains' into field. Choice
+s are: birthdate, email, gender, id, name
+
+In [10]: Customer.objects.filter(name__contains='o')
+Out[10]: <QuerySet [<Customer: 1 monkey>]>
+
+In [11]: Customer.objects.filter(dirthday__lte=timezone.now())
+---------------------------------------------------------------------
+
+NameError                           Traceback (most recent call last)
+
+<ipython-input-11-5dec75ea177c> in <module>
+----> 1 Customer.objects.filter(dirthday__lte=timezone.now())
+
+NameError: name 'timezone' is not defined
+
+In [12]: from django.utils import timezone
+
+In [13]: Customer.objects.filter(dirthday__lte=timezone.now())
+---------------------------------------------------------------------
+
+FieldError                          Traceback (most recent call last)
+
+<ipython-input-13-5dec75ea177c> in <module>
+----> 1 Customer.objects.filter(dirthday__lte=timezone.now())
+
+~\anaconda3\lib\site-packages\django\db\models\manager.py in manager_
+method(self, *args, **kwargs)
+     83         def create_method(name, method):
+     84             def manager_method(self, *args, **kwargs):
+---> 85                 return getattr(self.get_queryset(), name)(*ar
+gs, **kwargs)
+     86             manager_method.__name__ = method.__name__
+     87             manager_method.__doc__ = method.__doc__
+
+~\anaconda3\lib\site-packages\django\db\models\query.py in filter(sel
+f, *args, **kwargs)
+    940         """
+    941         self._not_support_combined_queries('filter')
+--> 942         return self._filter_or_exclude(False, *args, **kwargs
+)
+    943
+    944     def exclude(self, *args, **kwargs):
+
+~\anaconda3\lib\site-packages\django\db\models\query.py in _filter_or
+_exclude(self, negate, *args, **kwargs)
+    960             clone._deferred_filter = negate, args, kwargs
+    961         else:
+--> 962             clone._filter_or_exclude_inplace(negate, *args, *
+*kwargs)
+    963         return clone
+    964
+
+~\anaconda3\lib\site-packages\django\db\models\query.py in _filter_or
+_exclude_inplace(self, negate, *args, **kwargs)
+    967             self._query.add_q(~Q(*args, **kwargs))
+    968         else:
+--> 969             self._query.add_q(Q(*args, **kwargs))
+    970
+    971     def complex_filter(self, filter_obj):
+
+~\anaconda3\lib\site-packages\django\db\models\sql\query.py in add_q(
+self, q_object)
+   1358         # So, demotion is OK.
+   1359         existing_inner = {a for a in self.alias_map if self.a
+lias_map[a].join_type == INNER}
+-> 1360         clause, _ = self._add_q(q_object, self.used_aliases)
+   1361         if clause:
+   1362             self.where.add(clause, AND)
+
+~\anaconda3\lib\site-packages\django\db\models\sql\query.py in _add_q
+(self, q_object, used_aliases, branch_negated, current_negated, allow
+_joins, split_subq, check_filterable)
+   1377         joinpromoter = JoinPromoter(q_object.connector, len(q
+_object.children), current_negated)
+   1378         for child in q_object.children:
+-> 1379             child_clause, needed_inner = self.build_filter(
+   1380                 child, can_reuse=used_aliases, branch_negated
+=branch_negated,
+   1381                 current_negated=current_negated, allow_joins=
+allow_joins,
+
+~\anaconda3\lib\site-packages\django\db\models\sql\query.py in build_
+filter(self, filter_expr, branch_negated, current_negated, can_reuse,
+ allow_joins, split_subq, reuse_with_filtered_relation, check_filtera
+ble)
+   1258         if not arg:
+   1259             raise FieldError("Cannot parse keyword query %r"
+% arg)
+-> 1260         lookups, parts, reffed_expression = self.solve_lookup
+_type(arg)
+   1261
+   1262         if check_filterable:
+
+~\anaconda3\lib\site-packages\django\db\models\sql\query.py in solve_
+lookup_type(self, lookup)
+   1084             if expression:
+   1085                 return expression_lookups, (), expression
+-> 1086         _, field, _, lookup_parts = self.names_to_path(lookup
+_splitted, self.get_meta())
+   1087         field_parts = lookup_splitted[0:len(lookup_splitted)
+- len(lookup_parts)]
+   1088         if len(lookup_parts) > 1 and not field_parts:
+
+~\anaconda3\lib\site-packages\django\db\models\sql\query.py in names_
+to_path(self, names, opts, allow_many, fail_on_missing)
+   1481                         *self._filtered_relations,
+   1482                     ])
+-> 1483                     raise FieldError("Cannot resolve keyword
+'%s' into field. "
+   1484                                      "Choices are: %s" % (nam
+e, ", ".join(available)))
+   1485                 break
+
+FieldError: Cannot resolve keyword 'dirthday' into field. Choices are
+: birthdate, email, gender, id, name
+
+In [14]: Customer.objects.filter(birthday__lte=timezone.now())
+---------------------------------------------------------------------
+
+FieldError                          Traceback (most recent call last)
+
+<ipython-input-14-a9878e6dad53> in <module>
+----> 1 Customer.objects.filter(birthday__lte=timezone.now())
+
+~\anaconda3\lib\site-packages\django\db\models\manager.py in manager_
+method(self, *args, **kwargs)
+     83         def create_method(name, method):
+     84             def manager_method(self, *args, **kwargs):
+---> 85                 return getattr(self.get_queryset(), name)(*ar
+gs, **kwargs)
+     86             manager_method.__name__ = method.__name__
+     87             manager_method.__doc__ = method.__doc__
+
+~\anaconda3\lib\site-packages\django\db\models\query.py in filter(sel
+f, *args, **kwargs)
+    940         """
+    941         self._not_support_combined_queries('filter')
+--> 942         return self._filter_or_exclude(False, *args, **kwargs
+)
+    943
+    944     def exclude(self, *args, **kwargs):
+
+~\anaconda3\lib\site-packages\django\db\models\query.py in _filter_or
+_exclude(self, negate, *args, **kwargs)
+    960             clone._deferred_filter = negate, args, kwargs
+    961         else:
+--> 962             clone._filter_or_exclude_inplace(negate, *args, *
+*kwargs)
+    963         return clone
+    964
+
+~\anaconda3\lib\site-packages\django\db\models\query.py in _filter_or
+_exclude_inplace(self, negate, *args, **kwargs)
+    967             self._query.add_q(~Q(*args, **kwargs))
+    968         else:
+--> 969             self._query.add_q(Q(*args, **kwargs))
+    970
+    971     def complex_filter(self, filter_obj):
+
+~\anaconda3\lib\site-packages\django\db\models\sql\query.py in add_q(
+self, q_object)
+   1358         # So, demotion is OK.
+   1359         existing_inner = {a for a in self.alias_map if self.a
+lias_map[a].join_type == INNER}
+-> 1360         clause, _ = self._add_q(q_object, self.used_aliases)
+   1361         if clause:
+   1362             self.where.add(clause, AND)
+
+~\anaconda3\lib\site-packages\django\db\models\sql\query.py in _add_q
+(self, q_object, used_aliases, branch_negated, current_negated, allow
+_joins, split_subq, check_filterable)
+   1377         joinpromoter = JoinPromoter(q_object.connector, len(q
+_object.children), current_negated)
+   1378         for child in q_object.children:
+-> 1379             child_clause, needed_inner = self.build_filter(
+   1380                 child, can_reuse=used_aliases, branch_negated
+=branch_negated,
+   1381                 current_negated=current_negated, allow_joins=
+allow_joins,
+
+~\anaconda3\lib\site-packages\django\db\models\sql\query.py in build_
+filter(self, filter_expr, branch_negated, current_negated, can_reuse,
+ allow_joins, split_subq, reuse_with_filtered_relation, check_filtera
+ble)
+   1258         if not arg:
+   1259             raise FieldError("Cannot parse keyword query %r"
+% arg)
+-> 1260         lookups, parts, reffed_expression = self.solve_lookup
+_type(arg)
+   1261
+   1262         if check_filterable:
+
+~\anaconda3\lib\site-packages\django\db\models\sql\query.py in solve_
+lookup_type(self, lookup)
+   1084             if expression:
+   1085                 return expression_lookups, (), expression
+-> 1086         _, field, _, lookup_parts = self.names_to_path(lookup
+_splitted, self.get_meta())
+   1087         field_parts = lookup_splitted[0:len(lookup_splitted)
+- len(lookup_parts)]
+   1088         if len(lookup_parts) > 1 and not field_parts:
+
+~\anaconda3\lib\site-packages\django\db\models\sql\query.py in names_
+to_path(self, names, opts, allow_many, fail_on_missing)
+   1481                         *self._filtered_relations,
+   1482                     ])
+-> 1483                     raise FieldError("Cannot resolve keyword
+'%s' into field. "
+   1484                                      "Choices are: %s" % (nam
+e, ", ".join(available)))
+   1485                 break
+
+FieldError: Cannot resolve keyword 'birthday' into field. Choices are
+: birthdate, email, gender, id, name
+
+In [15]: Customer.objects.filter(birthdate__lte=timezone.now())
+Out[15]: <QuerySet [<Customer: 1 monkey>, <Customer: 2 tiger>, <Custo
+mer: 3 rabbit>, <Customer: 4 jame>]>
+
+In [16]: Customer.objects.order_by('name')
+Out[16]: <QuerySet [<Customer: 4 jame>, <Customer: 1 monkey>, <Custom
+er: 3 rabbit>, <Customer: 2 tiger>]>
+
+In [17]: Customer.objects.filter(name__contains='i')
+Out[17]: <QuerySet [<Customer: 2 tiger>, <Customer: 3 rabbit>]>
+
+In [18]: Customer.objects.filter(name__contains='i').order_by('pk')
+Out[18]: <QuerySet [<Customer: 2 tiger>, <Customer: 3 rabbit>]>
+
+In [19]: Customer.objects.filter(name__contains='i').order_by('-pk')
+    ...:
+Out[19]: <QuerySet [<Customer: 3 rabbit>, <Customer: 2 tiger>]>
+
+In [20]: Customer.objects.filter(name__contains='i').order_by('birth
+    ...: date')
+Out[20]: <QuerySet [<Customer: 2 tiger>, <Customer: 3 rabbit>]>
+
+In [21]:
