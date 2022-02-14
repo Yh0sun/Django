@@ -1,0 +1,11 @@
+{% extends 'customer/base.html' %}
+
+{% block content %}
+    <div class="post">
+        <h1><a href="">{{ ctm_key.name }}</a></h1>
+        <p>{{ ctm_key.email }}</p>
+        <div class="date">
+            <p> 생년월일 : {{ ctm_key.birthdate }}</p>
+        </div>
+    </div>
+{% endblock %}
