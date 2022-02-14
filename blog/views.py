@@ -1,12 +1,18 @@
 # Create your views here.
 
 from django.http import HttpResponse
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.utils import timezone
 
 from blog.models import Post
 
+#글 상세정보
+def post_detail(request, pk):
+    post = get_object_or_404(Post, pk=pk)
+    return render(request, 'blog/post_detail.html', {'post_key' : post})
 
+
+#글 목록
 def post_list(request):
     my_name = '장고웹프레임워크'
     http_method = request.method
@@ -19,5 +25,6 @@ def post_list(request):
     #                     )
 
     # return render(request, 'blog/post_list.html')
+
     posts = Post.objects.filter(published_date__lte=timezone.now()).order_by('-published_date')
     return render(request, 'blog/post_list.html', {'post_list':posts})
