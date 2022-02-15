@@ -1,4 +1,5 @@
 {% extends 'blog/base.html' %}
+
 {% block content %}
     {% for post in post_list %}
         <div class="post">
@@ -11,4 +12,5 @@
     {% empty %}
         <p>blog 글이 없습니다.</p>
     {% endfor %}
+
 {% endblock %}
