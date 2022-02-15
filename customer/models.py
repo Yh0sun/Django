@@ -15,4 +15,5 @@ class Customer(models.Model):
     gender = models.BooleanField()
 
     def __str__(self):
-        return str(self.id)+' '+self.name
+        return str(self.id)+self.name
+
