@@ -1,0 +1,70 @@
+In [1]: from blog.models import Post, Comment
+In [2]: Post.objects.all()
+Out[2]: <QuerySet [<Post: 첫번째글(1)>, <Post: 두번째글(2)>, <Post: sample(4)>, <Post: 파이썬언어(5)>, <Post: eee(6)>, <Post: test(7)>, <Post: 144(8)>]>
+
+In [3]: Comment.objects.all()
+Out[3]: <QuerySet [<Comment: 첫번째글의 댓글입니다.(1)>, <Comment: 두번째글의 댓글(2)>, <Comment: 테스트댓글(3)>, <Comment: 길동이 단 댓글(4)>]>
+
+In [5]: post1 = Post.objects.get(id=1)
+
+In [6]: post1
+Out[6]: <Post: 첫번째글(1)>
+
+In [7]: post1.comments.all()
+
+Out[7]: <QuerySet [<Comment: 첫번째글의 댓글입니다.(1)>, <Comment: 테스트댓글(3)>]>
+In [9]: for comm in post1.comments.all():
+   ...:     print(comm.id, comm.author, comm.text, comm.approved_comment)
+   ...:
+   ...:
+
+In [10]: post2 = Post.objects.get(id=2)
+
+In [11]: post2.comments.all()
+
+In [12]: post2.comments.count()
+
+In [13]: for com in post2.comments.all():
+    ...:     print(com.id, com.text, com.created_date, com.post)
+    ...:
+In [14]: for com in post2.comments.all():
+    ...:     print(com.id, com.approved_comment)
+    ...:
+
+In [15]: for com in post2.comments.all():
+    ...:     com.approve()
+    ...:
+
+In [16]: for com in post2.comments.all():
+    ...:     print(com.id, com.approved_comment)
+    ...:
+In [17]: comment2 = Comment.objects.get(id=2)
+
+In [18]: comment2
+
+In [19]: print(comment2.author, comment2.approved_comment, comment2.post, comment2.post.id, comment2.post.author)
+
+In [22]: comment2.approved_comment = False
+
+In [23]: comment2.approved_comment
+
+In [24]: comment2.save()
+
+In [25]: comment2.approved_comment
+
+In [2]: post = Post.objects.get(id=1)
+
+In [3]: post.comments.count()
+Out[3]: 3
+
+In [4]: post.comments.filter(approved_comment=True).count()
+Out[4]: 2
+
+In [5]: post.comments.filter(approved_comment=True)
+Out[5]: <QuerySet [<Comment: 첫번째글의 댓글입니다.(1)>, <Comment: 테스트댓글(3)>]>
+
+In [6]: post.comments.filter(approved_comment=False)
+Out[6]: <QuerySet [<Comment: 승인되지 않은 댓글(6)>]>
+
+In [7]: post.comments.filter(approved_comment=False).count()
+Out[7]: 1

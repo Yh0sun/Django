@@ -12,9 +12,12 @@ https://docs.djangoproject.com/en/3.1/ref/settings/
 
 from pathlib import Path
 
+import pymysql
+# pymysql django ORM 연동
+pymysql.install_as_MySQLdb()
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
@@ -26,7 +29,6 @@ SECRET_KEY = '1@4d#m66)w2k19i76*5$u_lt3lq97a1jy+=9m4qds$4r%1kj!3'
 DEBUG = True
 
 ALLOWED_HOSTS = []
-
 
 # Application definition
 
@@ -70,17 +72,22 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'mydjango.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
 DATABASES = {
+    # 'default': {
+    #     'ENGINE': 'django.db.backends.sqlite3',
+    #     'NAME': BASE_DIR / 'db.sqlite3',
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'django_db',  # DB명
+        'USER': 'python',  # 데이터베이스 계정
+        'PASSWORD': 'python',  # 계정 비밀번호
+        'HOST': 'localhost',  # 데이테베이스 IP
+        'PORT': '3306',  # 데이터베이스 port
     }
 }
-
 
 # Password validation
 # https://docs.djangoproject.com/en/3.1/ref/settings/#auth-password-validators
@@ -100,7 +107,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/3.1/topics/i18n/
 
@@ -114,12 +120,12 @@ USE_L10N = True
 
 USE_TZ = True
 
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
-import  os
+import os
+
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR,STATIC_URL)
+STATIC_ROOT = os.path.join(BASE_DIR, STATIC_URL)
 
 LOGIN_REDIRECT_URL = '/blog'

@@ -3,6 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.utils import timezone
+from django.core.paginator import Paginator,PageNotAnInteger,EmptyPage
 
 from blog.models import Post, Comment
 from .forms import PostModelForm, PostForm, CommentModelForm
@@ -102,8 +103,26 @@ def post_detail(request, pk):
     return render(request, 'blog/post_detail.html', {'post_key': post})
 
 
-# 글 목록
+#글 목록 Pagination 이용
+# www.codingfactory.net
 def post_list(request):
+    posts = Post.objects.filter(created_date__lte=timezone.now()).order_by('-created_date')
+    paginator = Paginator(posts, 2)
+    try:
+        # page number(페이지번호)를 화면에서 쿼리스트링으로 전달받는다
+        page_number = request.GET.get('page')
+        # 전달받은 페이지번호로 Page객체생성
+        page = paginator.page(page_number)
+    except PageNotAnInteger:
+        page = paginator.page(1)
+    except EmptyPage:
+        page = paginator.page(paginator.num_pages)
+
+    return render(request, 'blog/post_list.html', {'post_list': page})
+
+
+# 글 목록
+def post_list_first(request):
     my_name = '장고웹프레임워크'
     http_method = request.method
     # return HttpResponse('''

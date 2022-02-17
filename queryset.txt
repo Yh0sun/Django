@@ -966,4 +966,4 @@ In [97]: for p in Post.objects.all():
 2 (오늘일기)
 3 (내일일기)
 
-In [98]:
+
