@@ -1,12 +1,43 @@
 # Create your views here.
+from django.contrib.auth import authenticate
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.shortcuts import render, get_object_or_404, redirect
 from django.utils import timezone
-from django.core.paginator import Paginator,PageNotAnInteger,EmptyPage
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
+
+from rest_framework.authtoken.models import Token
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import AllowAny
+from rest_framework.response import Response
+from rest_framework.status import HTTP_400_BAD_REQUEST, HTTP_404_NOT_FOUND, HTTP_200_OK
 
 from blog.models import Post, Comment
 from .forms import PostModelForm, PostForm, CommentModelForm
+
+
+@api_view(['POST'])
+@permission_classes((AllowAny,))
+def login(request):
+    username = request.data.get('username')
+    # email = request.data.get('email')
+    password = request.data.get('password')
+
+    if username is None or password is None:
+        return Response({'error': 'Please provide both username and password'},
+                        status=HTTP_400_BAD_REQUEST)
+
+    # 여기서 authenticate로 유저 validate
+    user = authenticate(username=username, password=password)
+    print('>>>> user ', user)
+
+    if not user:
+        return Response({'error': 'Invalid credentials'}, status=HTTP_404_NOT_FOUND)
+
+    # user 로 토큰 발행
+    token, _ = Token.objects.get_or_create(user=user)
+
+    return Response({'token': token.key}, status=HTTP_200_OK)
 
 
 @login_required
@@ -14,6 +45,7 @@ def comment_approve(request, pk):
     comment = get_object_or_404(Comment, pk=pk)
     comment.approve()
     return redirect('post_detail', pk=comment.post.pk)
+
 
 @login_required
 def comment_remove(request, pk):
@@ -23,10 +55,10 @@ def comment_remove(request, pk):
     return redirect('post_detail', pk=post_pk)
 
 
-#댓글 등록
+# 댓글 등록
 def add_comment_tp_post(request, pk):
     post = get_object_or_404(Post, pk=pk)
-    if request.method =='POST':
+    if request.method == 'POST':
         form = CommentModelForm(request.POST)
         if form.is_valid():
             comment = form.save(commit=False)
@@ -35,7 +67,8 @@ def add_comment_tp_post(request, pk):
         return redirect('post_detail', pk=post.pk)
     else:
         form = CommentModelForm()
-    return render(request, 'blog/add_comment_to_post.html',{'form':form})
+    return render(request, 'blog/add_comment_to_post.html', {'form': form})
+
 
 # 글 삭제
 @login_required
@@ -103,7 +136,7 @@ def post_detail(request, pk):
     return render(request, 'blog/post_detail.html', {'post_key': post})
 
 
-#글 목록 Pagination 이용
+# 글 목록 Pagination 이용
 # www.codingfactory.net
 def post_list(request):
     posts = Post.objects.filter(created_date__lte=timezone.now()).order_by('-created_date')
