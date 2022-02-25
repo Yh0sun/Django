@@ -1,0 +1,131 @@
+In [4]: from  django.core.paginator import Paginator
+
+In [5]: objs =['호랑이', '악어', '토끼', '거북이', '하마', '얼룩말', '사자
+   ...: ', '시조새']
+
+In [6]: p=Paginator(objs,2)
+
+In [7]: type(p)
+Out[7]: django.core.paginator.Paginator
+
+In [8]: p.count
+Out[8]: 8
+
+In [9]: p.num_page
+---------------------------------------------------------------------------
+
+AttributeError                            Traceback (most recent call last)
+
+<ipython-input-9-1114044aaf7e> in <module>
+----> 1 p.num_page
+
+AttributeError: 'Paginator' object has no attribute 'num_pa
+ge'
+
+In [10]: p.num_pages
+Out[10]: 4
+
+In [11]: p.page_range
+Out[11]: range(1, 5)
+
+In [12]: page1=p.page(1)
+
+In [13]: page2=p.page(2)
+
+In [14]: page1.object_list
+Out[14]: ['호랑이', '악어']
+
+In [15]: page2.has_next()
+Out[15]: True
+
+In [16]: page3.object_list
+-----------------------------------------------------------
+
+NameError                 Traceback (most recent call last)
+
+<ipython-input-16-4f9c2612b805> in <module>
+----> 1 page3.object_list
+
+NameError: name 'page3' is not defined
+
+In [17]: for val in p.page_range
+  File "<ipython-input-17-5518eaa666b9>", line 1
+    for val in p.page_range
+                           ^
+SyntaxError: invalid syntax
+
+
+In [18]: for val in p.page_range:
+    ...:     print(val)
+    ...:
+1
+2
+3
+4
+
+In [19]: p1=p.page(1)
+
+In [20]: p2=p.page(2)
+
+In [21]: p3=p.page(3)
+
+In [22]: p4=p.page(4)
+
+In [23]: p1.has_previous()
+Out[23]: False
+
+In [24]: p1.has_next()
+Out[24]: True
+
+In [25]: p3.start_idex()
+-----------------------------------------------------------
+
+AttributeError            Traceback (most recent call last)
+
+<ipython-input-25-74bf3485f151> in <module>
+----> 1 p3.start_idex()
+
+AttributeError: 'Page' object has no attribute 'start_idex'
+
+
+In [26]: p3.start_idex()
+-----------------------------------------------------------
+
+AttributeError            Traceback (most recent call last)
+<ipython-input-26-74bf3485f151> in <module>
+----> 1 p3.start_idex()
+
+AttributeError: 'Page' object has no attribute 'start_idex'
+
+In [27]: p3.start_index()
+Out[27]: 5
+In [28]: p3.end_index()
+Out[28]: 6
+
+In [29]: p4.next_page_number()
+---------------------------------------------------------------------------
+EmptyPage                                 Traceback (most recent call last)
+<ipython-input-29-19a9d3639ed2> in <module>
+----> 1 p4.next_page_number()
+
+~\anaconda3\lib\site-packages\django\core\paginator.py in next_page_number(self)
+    165
+    166     def next_page_number(self):
+--> 167         return self.paginator.validate_number(self.number + 1)
+    168
+    169     def previous_page_number(self):
+
+~\anaconda3\lib\site-packages\django\core\paginator.py in validate_number(self, number)
+     53                 pass
+     54             else:
+---> 55                 raise EmptyPage(_('That page contains no results'))
+     56         return number
+     57
+
+EmptyPage: 해당 페이지에 결과가 없습니다.
+
+In [30]: p2.next_page_number()
+Out[30]: 3
+
+In [31]: p4.previous_page_number()
+Out[31]: 3

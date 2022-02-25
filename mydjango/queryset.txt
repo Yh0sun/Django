@@ -1,0 +1,969 @@
+Microsoft Windows [Version 10.0.22000.434]
+(c) Microsoft Corporation. All rights reserved.
+
+(base) C:\mypython\mydjango>python manage.oy showmigrations blog
+python: can't open file 'C:\mypython\mydjango\manage.oy': [Errno 2] N
+o such file or directory
+
+(base) C:\mypython\mydjango>python manage.py showmigrations blog
+blog
+ [X] 0001_initial
+
+(base) C:\mypython\mydjango>python manage.py sqlmigrate blog 0001
+BEGIN;
+--
+-- Create model Post
+--
+CREATE TABLE "blog_post" ("id" integer NOT NULL PRIMARY KEY AUTOINCRE
+MENT, "title" varchar(200) NOT NULL, "text" text NOT NULL, "created_d
+ate" datetime NOT NULL, "published_date" datetime NULL, "author_id" i
+nteger NOT NULL REFERENCES "auth_user" ("id") DEFERRABLE INITIALLY DE
+FERRED);
+CREATE INDEX "blog_post_author_id_dd7a8485" ON "blog_post" ("author_i
+d");
+COMMIT;
+
+(base) C:\mypython\mydjango>python manage.py makemigrations blog
+No changes detected in app 'blog'
+
+(base) C:\mypython\mydjango>python manage.py makemigrations blog
+No changes detected in app 'blog'
+
+(base) C:\mypython\mydjango>python manage.py makemigrations blog
+No changes detected in app 'blog'
+
+(base) C:\mypython\mydjango>python manage.py makemigration blog
+Unknown command: 'makemigration'. Did you mean makemigrations?
+Type 'manage.py help' for usage.
+
+(base) C:\mypython\mydjango>python manage.py makemigrations blog
+No changes detected in app 'blog'
+
+(base) C:\mypython\mydjango>python manage.py makemigrations blog
+You are trying to add a non-nullable field 'test' to post without a d
+efault; we can't do that (the database needs something to populate ex
+isting rows).
+Please select a fix:
+ 1) Provide a one-off default now (will be set on all existing rows w
+ith a null value for this column)
+ 2) Quit, and let me add a default in models.py
+Select an option: 1
+Please enter the default value now, as valid Python
+The datetime and django.utils.timezone modules are available, so you
+can do e.g. timezone.now
+Type 'exit' to exit this prompt
+>>> 테스트
+Invalid input: name '테스트' is not defined
+>>> '테스트'
+Migrations for 'blog':
+  blog\migrations\0002_post_test.py
+    - Add field test to post
+
+(base) C:\mypython\mydjango>python manage.py migrate blog
+Operations to perform:
+  Apply all migrations: blog
+Running migrations:
+  Applying blog.0002_post_test... OK
+
+(base) C:\mypython\mydjango>python manage.py showmigrations blog
+blog
+ [X] 0001_initial
+ [X] 0002_post_test
+
+(base) C:\mypython\mydjango>python manage.py sqlmigrate blog 0002
+BEGIN;
+--
+-- Add field test to post
+--
+CREATE TABLE "new__blog_post" ("id" integer NOT NULL PRIMARY KEY AUTO
+INCREMENT, "test" text NOT NULL, "title" varchar(200) NOT NULL, "text
+" text NOT NULL, "created_date" datetime NOT NULL, "published_date" d
+atetime NULL, "author_id" integer NOT NULL REFERENCES "auth_user" ("i
+d") DEFERRABLE INITIALLY DEFERRED);
+INSERT INTO "new__blog_post" ("id", "title", "text", "created_date",
+"published_date", "author_id", "test") SELECT "id", "title", "text",
+"created_date", "published_date", "author_id", '테스트' FROM "blog_po
+st";
+DROP TABLE "blog_post";
+ALTER TABLE "new__blog_post" RENAME TO "blog_post";
+CREATE INDEX "blog_post_author_id_dd7a8485" ON "blog_post" ("author_i
+d");
+COMMIT;
+
+(base) C:\mypython\mydjango>python manage.py sqlmigrate blog 000
+CommandError: More than one migration matches '000' in app 'blog'. Pl
+ease be more specific.
+
+(base) C:\mypython\mydjango>python manage.py sqlmigrate blog 0002
+BEGIN;
+--
+-- Add field test to post
+--
+CREATE TABLE "new__blog_post" ("id" integer NOT NULL PRIMARY KEY AUTO
+INCREMENT, "test" text NOT NULL, "title" varchar(200) NOT NULL, "text
+" text NOT NULL, "created_date" datetime NOT NULL, "published_date" d
+atetime NULL, "author_id" integer NOT NULL REFERENCES "auth_user" ("i
+d") DEFERRABLE INITIALLY DEFERRED);
+INSERT INTO "new__blog_post" ("id", "title", "text", "created_date",
+"published_date", "author_id", "test") SELECT "id", "title", "text",
+"created_date", "published_date", "author_id", '테스트' FROM "blog_po
+st";
+DROP TABLE "blog_post";
+ALTER TABLE "new__blog_post" RENAME TO "blog_post";
+CREATE INDEX "blog_post_author_id_dd7a8485" ON "blog_post" ("author_i
+d");
+COMMIT;
+
+(base) C:\mypython\mydjango>python manage.py makemigrations blog
+Migrations for 'blog':
+  blog\migrations\0003_remove_post_test.py
+    - Remove field test from post
+
+(base) C:\mypython\mydjango>python manage.py migrate blog
+Operations to perform:
+  Apply all migrations: blog
+Running migrations:
+  Applying blog.0003_remove_post_test... OK
+
+(base) C:\mypython\mydjango>python manage.py showmigrations blog
+blog
+ [X] 0001_initial
+ [X] 0002_post_test
+ [X] 0003_remove_post_test
+
+(base) C:\mypython\mydjango>python manage.py sqlmigrate blog 0003
+BEGIN;
+--
+-- Remove field test from post
+--
+CREATE TABLE "new__blog_post" ("id" integer NOT NULL PRIMARY KEY AUTO
+INCREMENT, "title" varchar(200) NOT NULL, "text" text NOT NULL, "crea
+ted_date" datetime NOT NULL, "published_date" datetime NULL, "author_
+id" integer NOT NULL REFERENCES "auth_user" ("id") DEFERRABLE INITIAL
+LY DEFERRED);
+INSERT INTO "new__blog_post" ("id", "title", "text", "created_date",
+"published_date", "author_id") SELECT "id", "title", "text", "created
+_date", "published_date", "author_id" FROM "blog_post";
+DROP TABLE "blog_post";
+ALTER TABLE "new__blog_post" RENAME TO "blog_post";
+CREATE INDEX "blog_post_author_id_dd7a8485" ON "blog_post" ("author_i
+d");
+COMMIT;
+
+(base) C:\mypython\mydjango>python manage.py shell
+Python 3.9.7 (default, Sep 16 2021, 16:59:28) [MSC v.1916 64 bit (AMD
+64)]
+Type 'copyright', 'credits' or 'license' for more information
+IPython 7.29.0 -- An enhanced Interactive Python. Type '?' for help.
+
+In [1]: from blog.models import Post
+
+In [2]: Post.objects.all()
+Out[2]: <QuerySet [<Post: 1 어제일기>, <Post: 2 오늘일기>, <Post: 3
+내일일기>]>
+
+In [3]: exit
+
+(base) C:\mypython\mydjango>python manage.py shell
+Python 3.9.7 (default, Sep 16 2021, 16:59:28) [MSC v.1916 64 bit (AMD
+64)]
+Type 'copyright', 'credits' or 'license' for more information
+IPython 7.29.0 -- An enhanced Interactive Python. Type '?' for help.
+
+In [1]: Post.object.all()
+---------------------------------------------------------------------
+
+NameError                           Traceback (most recent call last)
+
+<ipython-input-1-9d1da07d3c7e> in <module>
+----> 1 Post.object.all()
+
+NameError: name 'Post' is not defined
+
+In [2]: Post.objects.all()
+---------------------------------------------------------------------
+
+NameError                           Traceback (most recent call last)
+
+<ipython-input-2-09ba15aa7345> in <module>
+----> 1 Post.objects.all()
+
+NameError: name 'Post' is not defined
+
+In [3]: from blog.models import Post
+
+In [4]: Post.objects.all()
+Out[4]: <QuerySet [<Post: 1 (어제일기)>, <Post: 2 (오늘일기)>, <Post:
+ 3 (내일일기)>]>
+
+In [5]: type(Post.objects.all())
+Out[5]: django.db.models.query.QuerySet
+
+In [6]: print post for post in Post.objects.all()
+  File "<ipython-input-6-a2fee6144540>", line 1
+    print post for post in Post.objects.all()
+          ^
+SyntaxError: invalid syntax
+
+
+In [7]: print post[ for post in Post.objects.all()]
+  File "<ipython-input-7-516d3efa84c5>", line 1
+    print post[ for post in Post.objects.all()]
+          ^
+SyntaxError: invalid syntax
+
+
+In [8]: print(post)[ for post in Post.objects.all()]
+  File "<ipython-input-8-71602a7c5adc>", line 1
+    print(post)[ for post in Post.objects.all()]
+                 ^
+SyntaxError: invalid syntax
+
+
+In [9]: print(post) for post in Post.objects.all()
+  File "<ipython-input-9-9a7c7862e428>", line 1
+    print(post) for post in Post.objects.all()
+                ^
+SyntaxError: invalid syntax
+
+
+In [10]: for post in Post.objects.all():
+    ...:     print(type(post), post)
+    ...:
+<class 'blog.models.Post'> 1 (어제일기)
+<class 'blog.models.Post'> 2 (오늘일기)
+<class 'blog.models.Post'> 3 (내일일기)
+
+In [11]: from django.contrib.auth.models import user
+---------------------------------------------------------------------
+
+ImportError                         Traceback (most recent call last)
+
+<ipython-input-11-1bf32dc1d732> in <module>
+----> 1 from django.contrib.auth.models import user
+
+ImportError: cannot import name 'user' from 'django.contrib.auth.mode
+ls' (C:\Users\User\anaconda3\lib\site-packages\django\contrib\auth\mo
+dels.py)
+
+In [12]: from django.contrib.auth.models import User
+
+In [13]: User.objects.all()
+Out[13]: <QuerySet [<User: python>]>
+
+In [14]: User.objects.get(username=python)
+---------------------------------------------------------------------
+
+NameError                           Traceback (most recent call last)
+
+<ipython-input-14-2bba565458fc> in <module>
+----> 1 User.objects.get(username=python)
+
+NameError: name 'python' is not defined
+
+In [15]: User.objects.get(username='python')
+Out[15]: <User: python>
+
+In [16]: me=User.objects.get(username='python')
+
+In [17]: me.id
+Out[17]: 1
+
+In [18]: me.username
+Out[18]: 'python'
+
+In [19]: me.passward
+---------------------------------------------------------------------
+
+AttributeError                      Traceback (most recent call last)
+
+<ipython-input-19-1f1ba270062e> in <module>
+----> 1 me.passward
+
+AttributeError: 'User' object has no attribute 'passward'
+
+In [20]: me.password
+Out[20]: 'pbkdf2_sha256$216000$nBgK8aFekM7B$u2cngGQLhqInfq8GM36wCgTa8
+tR21Khr7A9s3JHrV4o='
+
+In [21]: me.email
+Out[21]: 'aa@aa.com'
+
+In [22]: me=User.objects.get(username='rabbit')
+---------------------------------------------------------------------
+
+DoesNotExist                        Traceback (most recent call last)
+
+<ipython-input-22-8287f12bbbbb> in <module>
+----> 1 me=User.objects.get(username='rabbit')
+
+~\anaconda3\lib\site-packages\django\db\models\manager.py in manager_
+method(self, *args, **kwargs)
+     83         def create_method(name, method):
+     84             def manager_method(self, *args, **kwargs):
+---> 85                 return getattr(self.get_queryset(), name)(*ar
+gs, **kwargs)
+     86             manager_method.__name__ = method.__name__
+     87             manager_method.__doc__ = method.__doc__
+
+~\anaconda3\lib\site-packages\django\db\models\query.py in get(self,
+*args, **kwargs)
+    427             return clone._result_cache[0]
+    428         if not num:
+--> 429             raise self.model.DoesNotExist(
+    430                 "%s matching query does not exist." %
+    431                 self.model._meta.object_name
+
+DoesNotExist: User matching query does not exist.
+
+In [23]: post1 = Post.objects.get(title='미래일기')
+---------------------------------------------------------------------
+
+DoesNotExist                        Traceback (most recent call last)
+
+<ipython-input-23-851b1ef5b645> in <module>
+----> 1 post1 = Post.objects.get(title='미래일기')
+
+~\anaconda3\lib\site-packages\django\db\models\manager.py in manager_
+method(self, *args, **kwargs)
+     83         def create_method(name, method):
+     84             def manager_method(self, *args, **kwargs):
+---> 85                 return getattr(self.get_queryset(), name)(*ar
+gs, **kwargs)
+     86             manager_method.__name__ = method.__name__
+     87             manager_method.__doc__ = method.__doc__
+
+~\anaconda3\lib\site-packages\django\db\models\query.py in get(self,
+*args, **kwargs)
+    427             return clone._result_cache[0]
+    428         if not num:
+--> 429             raise self.model.DoesNotExist(
+    430                 "%s matching query does not exist." %
+    431                 self.model._meta.object_name
+
+DoesNotExist: Post matching query does not exist.
+
+In [24]: post1 = Post.objects.get(title=미래일기)
+---------------------------------------------------------------------
+
+NameError                           Traceback (most recent call last)
+
+<ipython-input-24-4452278e062b> in <module>
+----> 1 post1 = Post.objects.get(title=미래일기)
+
+NameError: name '미래일기' is not defined
+
+In [25]: post1 = Post.objects.get(title='미래일기')
+---------------------------------------------------------------------
+
+DoesNotExist                        Traceback (most recent call last)
+
+<ipython-input-25-851b1ef5b645> in <module>
+----> 1 post1 = Post.objects.get(title='미래일기')
+
+~\anaconda3\lib\site-packages\django\db\models\manager.py in manager_
+method(self, *args, **kwargs)
+     83         def create_method(name, method):
+     84             def manager_method(self, *args, **kwargs):
+---> 85                 return getattr(self.get_queryset(), name)(*ar
+gs, **kwargs)
+     86             manager_method.__name__ = method.__name__
+     87             manager_method.__doc__ = method.__doc__
+
+~\anaconda3\lib\site-packages\django\db\models\query.py in get(self,
+*args, **kwargs)
+    427             return clone._result_cache[0]
+    428         if not num:
+--> 429             raise self.model.DoesNotExist(
+    430                 "%s matching query does not exist." %
+    431                 self.model._meta.object_name
+
+DoesNotExist: Post matching query does not exist.
+
+In [26]: post1 = Post.objects.get(title='내일일일기')
+---------------------------------------------------------------------
+
+DoesNotExist                        Traceback (most recent call last)
+
+<ipython-input-26-53b563d7c2f7> in <module>
+----> 1 post1 = Post.objects.get(title='내일일일기')
+
+~\anaconda3\lib\site-packages\django\db\models\manager.py in manager_
+method(self, *args, **kwargs)
+     83         def create_method(name, method):
+     84             def manager_method(self, *args, **kwargs):
+---> 85                 return getattr(self.get_queryset(), name)(*ar
+gs, **kwargs)
+     86             manager_method.__name__ = method.__name__
+     87             manager_method.__doc__ = method.__doc__
+
+~\anaconda3\lib\site-packages\django\db\models\query.py in get(self,
+*args, **kwargs)
+    427             return clone._result_cache[0]
+    428         if not num:
+--> 429             raise self.model.DoesNotExist(
+    430                 "%s matching query does not exist." %
+    431                 self.model._meta.object_name
+
+DoesNotExist: Post matching query does not exist.
+
+In [27]: post1 = Post.objects.get(title='내일일기')
+
+In [28]: post1.id
+Out[28]: 3
+
+In [29]: post1.author
+Out[29]: <User: python>
+
+In [30]: post1.author.email
+Out[30]: 'aa@aa.com'
+
+In [31]: post1.author.id
+Out[31]: 1
+
+In [32]: post1.author.password
+Out[32]: 'pbkdf2_sha256$216000$nBgK8aFekM7B$u2cngGQLhqInfq8GM36wCgTa8
+tR21Khr7A9s3JHrV4o='
+
+In [33]: post1.author.username
+Out[33]: 'python'
+
+In [34]: posts = Post.objects.all()
+
+In [35]: posts[2]
+Out[35]: <Post: 3 (내일일기)>
+
+In [36]: post[1].id
+---------------------------------------------------------------------
+
+TypeError                           Traceback (most recent call last)
+
+<ipython-input-36-d330ed5fa092> in <module>
+----> 1 post[1].id
+
+TypeError: 'Post' object is not subscriptable
+
+In [37]: posts[1].id
+Out[37]: 2
+
+In [38]: posts[1].author
+Out[38]: <User: python>
+
+In [39]: posts[1].text
+Out[39]: '2222'
+
+In [40]: posts[1].created_date
+Out[40]: datetime.datetime(2022, 2, 11, 0, 21, 46, tzinfo=<UTC>)
+
+In [41]: posts[1].published_date
+Out[41]: datetime.datetime(2022, 2, 11, 1, 3, 31, tzinfo=<UTC>)
+
+In [42]: posts[1].published_date.hour
+Out[42]: 1
+
+In [43]: posts[1].created_date.hour
+Out[43]: 0
+
+In [44]: post2=[posts[1].title, posts[1].text,posts[1].created_date,
+    ...: posts[1].author,posts[1].email]
+---------------------------------------------------------------------
+
+AttributeError                      Traceback (most recent call last)
+
+<ipython-input-44-cccbea1840ba> in <module>
+----> 1 post2=[posts[1].title, posts[1].text,posts[1].created_date,po
+sts[1].author,posts[1].email]
+
+AttributeError: 'Post' object has no attribute 'email'
+
+In [45]: post2=[posts[1].title, posts[1].text,posts[1].created_date,
+    ...: posts[1].author,posts[1].author.email]
+
+In [46]: post2
+Out[46]:
+['오늘일기',
+ '2222',
+ datetime.datetime(2022, 2, 11, 0, 21, 46, tzinfo=<UTC>),
+ <User: python>,
+ 'aa@aa.com']
+
+In [47]: post2=[posts[1].title, posts[1].text,posts[1].created_date,
+    ...: posts[1].author.username,posts[1].author.email]
+
+In [48]: post2
+Out[48]:
+['오늘일기',
+ '2222',
+ datetime.datetime(2022, 2, 11, 0, 21, 46, tzinfo=<UTC>),
+ 'python',
+ 'aa@aa.com']
+
+In [49]: me
+Out[49]: <User: python>
+
+In [50]: Post.objects.create(author=me,title='미래일기',text='44444'
+    ...: )
+Out[50]: <Post: 4 (미래일기)>
+
+In [51]: Post.objects.get(title='미래일기')
+Out[51]: <Post: 4 (미래일기)>
+
+In [52]: post4=Post.objects.get(title='미래일기')
+
+In [53]: type(post4)
+Out[53]: blog.models.Post
+
+In [54]: post4.author
+Out[54]: <User: python>
+
+In [55]: post4.text
+Out[55]: '44444'
+
+In [56]: Post.object.filter(author=me)
+---------------------------------------------------------------------
+
+AttributeError                      Traceback (most recent call last)
+
+<ipython-input-56-5536612e7557> in <module>
+----> 1 Post.object.filter(author=me)
+
+AttributeError: type object 'Post' has no attribute 'object'
+
+In [57]: Post.objects.filter(author=me)
+Out[57]: <QuerySet [<Post: 1 (어제일기)>, <Post: 2 (오늘일기)>, <Post
+: 3 (내일일기)>, <Post: 4 (미래일기)>]>
+
+In [58]: Post.objects.filter(title='일기')
+Out[58]: <QuerySet []>
+
+In [59]: Post.objects.filter(title__contains='일기')
+Out[59]: <QuerySet [<Post: 1 (어제일기)>, <Post: 2 (오늘일기)>, <Post
+: 3 (내일일기)>, <Post: 4 (미래일기)>]>
+
+In [60]: from django.utils import timezone
+
+In [61]: timezone.now()
+Out[61]: datetime.datetime(2022, 2, 11, 4, 15, 23, 153422, tzinfo=<UT
+C>)
+
+In [62]: Post.objects.filter(published_date__lte=timezone.now())
+Out[62]: <QuerySet [<Post: 1 (어제일기)>, <Post: 2 (오늘일기)>, <Post
+: 3 (내일일기)>]>
+
+In [63]:
+
+In [63]: for p in Post.objects.all():
+    ...:     print(p.id, p.published_date)
+    ...:
+1 2022-02-11 01:02:46+00:00
+2 2022-02-11 01:03:31+00:00
+3 2022-02-11 01:35:42+00:00
+4 None
+
+In [64]: post4
+Out[64]: <Post: 4 (미래일기)>
+
+In [65]: post4.publish()
+
+In [66]: for p in Post.objects.all():
+    ...:     print(p.id, p.published_date)
+    ...:
+1 2022-02-11 01:02:46+00:00
+2 2022-02-11 01:03:31+00:00
+3 2022-02-11 01:35:42+00:00
+4 2022-02-11 04:23:27.884445+00:00
+
+In [67]: post1
+Out[67]: <Post: 3 (내일일기)>
+
+In [68]: post1.publish()
+
+In [69]: for p in Post.objects.all():
+    ...:     print(p.id, p.published_date)
+    ...:
+1 2022-02-11 01:02:46+00:00
+2 2022-02-11 01:03:31+00:00
+3 2022-02-11 04:24:14.698920+00:00
+4 2022-02-11 04:23:27.884445+00:00
+
+In [70]: p1
+---------------------------------------------------------------------
+
+NameError                           Traceback (most recent call last)
+
+<ipython-input-70-7eee5d7ce100> in <module>
+----> 1 p1
+
+NameError: name 'p1' is not defined
+
+In [71]: post4
+Out[71]: <Post: 4 (미래일기)>
+
+In [72]: post4.pk
+Out[72]: 4
+
+In [73]: print(post4.id, post4.pk)
+4 4
+
+In [74]: post1=Post.objects.get(id=0)
+---------------------------------------------------------------------
+
+DoesNotExist                        Traceback (most recent call last)
+
+<ipython-input-74-204e56028ca3> in <module>
+----> 1 post1=Post.objects.get(id=0)
+
+~\anaconda3\lib\site-packages\django\db\models\manager.py in manager_
+method(self, *args, **kwargs)
+     83         def create_method(name, method):
+     84             def manager_method(self, *args, **kwargs):
+---> 85                 return getattr(self.get_queryset(), name)(*ar
+gs, **kwargs)
+     86             manager_method.__name__ = method.__name__
+     87             manager_method.__doc__ = method.__doc__
+
+~\anaconda3\lib\site-packages\django\db\models\query.py in get(self,
+*args, **kwargs)
+    427             return clone._result_cache[0]
+    428         if not num:
+--> 429             raise self.model.DoesNotExist(
+    430                 "%s matching query does not exist." %
+    431                 self.model._meta.object_name
+
+DoesNotExist: Post matching query does not exist.
+
+In [75]: post1=Post.objects.get(id=1)
+
+In [76]: post1
+Out[76]: <Post: 1 (어제일기)>
+
+In [77]: post2=Post.objects.get(id=2)
+
+In [78]: post3=Post.objects.get(id=3)
+
+In [79]: Post.objects.filter(title='일기').odered_by('-created_date'
+    ...: )
+---------------------------------------------------------------------
+
+AttributeError                      Traceback (most recent call last)
+
+<ipython-input-79-4befa51cdf58> in <module>
+----> 1 Post.objects.filter(title='일기').odered_by('-created_date')
+
+AttributeError: 'QuerySet' object has no attribute 'odered_by'
+
+In [80]: Post.objects.filter(title='일기').oder_by('-created_date')
+---------------------------------------------------------------------
+
+AttributeError                      Traceback (most recent call last)
+
+<ipython-input-80-4735a6d51c53> in <module>
+----> 1 Post.objects.filter(title='일기').oder_by('-created_date')
+
+AttributeError: 'QuerySet' object has no attribute 'oder_by'
+
+In [81]: Post.objects.filter(title='일기').order_by('-created_date')
+    ...:
+Out[81]: <QuerySet []>
+
+In [82]: Post.objects.filter(title_contains='일기').order_by('-creat
+    ...: ed_date')
+---------------------------------------------------------------------
+
+FieldError                          Traceback (most recent call last)
+
+<ipython-input-82-c48891580773> in <module>
+----> 1 Post.objects.filter(title_contains='일기').order_by('-created
+_date')
+
+~\anaconda3\lib\site-packages\django\db\models\manager.py in manager_
+method(self, *args, **kwargs)
+     83         def create_method(name, method):
+     84             def manager_method(self, *args, **kwargs):
+---> 85                 return getattr(self.get_queryset(), name)(*ar
+gs, **kwargs)
+     86             manager_method.__name__ = method.__name__
+     87             manager_method.__doc__ = method.__doc__
+
+~\anaconda3\lib\site-packages\django\db\models\query.py in filter(sel
+f, *args, **kwargs)
+    940         """
+    941         self._not_support_combined_queries('filter')
+--> 942         return self._filter_or_exclude(False, *args, **kwargs
+)
+    943
+    944     def exclude(self, *args, **kwargs):
+
+~\anaconda3\lib\site-packages\django\db\models\query.py in _filter_or
+_exclude(self, negate, *args, **kwargs)
+    960             clone._deferred_filter = negate, args, kwargs
+    961         else:
+--> 962             clone._filter_or_exclude_inplace(negate, *args, *
+*kwargs)
+    963         return clone
+    964
+
+~\anaconda3\lib\site-packages\django\db\models\query.py in _filter_or
+_exclude_inplace(self, negate, *args, **kwargs)
+    967             self._query.add_q(~Q(*args, **kwargs))
+    968         else:
+--> 969             self._query.add_q(Q(*args, **kwargs))
+    970
+    971     def complex_filter(self, filter_obj):
+
+~\anaconda3\lib\site-packages\django\db\models\sql\query.py in add_q(
+self, q_object)
+   1358         # So, demotion is OK.
+   1359         existing_inner = {a for a in self.alias_map if self.a
+lias_map[a].join_type == INNER}
+-> 1360         clause, _ = self._add_q(q_object, self.used_aliases)
+   1361         if clause:
+   1362             self.where.add(clause, AND)
+
+~\anaconda3\lib\site-packages\django\db\models\sql\query.py in _add_q
+(self, q_object, used_aliases, branch_negated, current_negated, allow
+_joins, split_subq, check_filterable)
+   1377         joinpromoter = JoinPromoter(q_object.connector, len(q
+_object.children), current_negated)
+   1378         for child in q_object.children:
+-> 1379             child_clause, needed_inner = self.build_filter(
+   1380                 child, can_reuse=used_aliases, branch_negated
+=branch_negated,
+   1381                 current_negated=current_negated, allow_joins=
+allow_joins,
+
+~\anaconda3\lib\site-packages\django\db\models\sql\query.py in build_
+filter(self, filter_expr, branch_negated, current_negated, can_reuse,
+ allow_joins, split_subq, reuse_with_filtered_relation, check_filtera
+ble)
+   1258         if not arg:
+   1259             raise FieldError("Cannot parse keyword query %r"
+% arg)
+-> 1260         lookups, parts, reffed_expression = self.solve_lookup
+_type(arg)
+   1261
+   1262         if check_filterable:
+
+~\anaconda3\lib\site-packages\django\db\models\sql\query.py in solve_
+lookup_type(self, lookup)
+   1084             if expression:
+   1085                 return expression_lookups, (), expression
+-> 1086         _, field, _, lookup_parts = self.names_to_path(lookup
+_splitted, self.get_meta())
+   1087         field_parts = lookup_splitted[0:len(lookup_splitted)
+- len(lookup_parts)]
+   1088         if len(lookup_parts) > 1 and not field_parts:
+
+~\anaconda3\lib\site-packages\django\db\models\sql\query.py in names_
+to_path(self, names, opts, allow_many, fail_on_missing)
+   1481                         *self._filtered_relations,
+   1482                     ])
+-> 1483                     raise FieldError("Cannot resolve keyword
+'%s' into field. "
+   1484                                      "Choices are: %s" % (nam
+e, ", ".join(available)))
+   1485                 break
+
+FieldError: Cannot resolve keyword 'title_contains' into field. Choic
+es are: author, author_id, created_date, id, published_date, text, ti
+tle
+
+In [83]: Post.objects.filter(title_contain='일기').order_by('-create
+    ...: d_date')
+---------------------------------------------------------------------
+
+FieldError                          Traceback (most recent call last)
+
+<ipython-input-83-68d35ce6f249> in <module>
+----> 1 Post.objects.filter(title_contain='일기').order_by('-created_
+date')
+
+~\anaconda3\lib\site-packages\django\db\models\manager.py in manager_
+method(self, *args, **kwargs)
+     83         def create_method(name, method):
+     84             def manager_method(self, *args, **kwargs):
+---> 85                 return getattr(self.get_queryset(), name)(*ar
+gs, **kwargs)
+     86             manager_method.__name__ = method.__name__
+     87             manager_method.__doc__ = method.__doc__
+
+~\anaconda3\lib\site-packages\django\db\models\query.py in filter(sel
+f, *args, **kwargs)
+    940         """
+    941         self._not_support_combined_queries('filter')
+--> 942         return self._filter_or_exclude(False, *args, **kwargs
+)
+    943
+    944     def exclude(self, *args, **kwargs):
+
+~\anaconda3\lib\site-packages\django\db\models\query.py in _filter_or
+_exclude(self, negate, *args, **kwargs)
+    960             clone._deferred_filter = negate, args, kwargs
+    961         else:
+--> 962             clone._filter_or_exclude_inplace(negate, *args, *
+*kwargs)
+    963         return clone
+    964
+
+~\anaconda3\lib\site-packages\django\db\models\query.py in _filter_or
+_exclude_inplace(self, negate, *args, **kwargs)
+    967             self._query.add_q(~Q(*args, **kwargs))
+    968         else:
+--> 969             self._query.add_q(Q(*args, **kwargs))
+    970
+    971     def complex_filter(self, filter_obj):
+
+~\anaconda3\lib\site-packages\django\db\models\sql\query.py in add_q(
+self, q_object)
+   1358         # So, demotion is OK.
+   1359         existing_inner = {a for a in self.alias_map if self.a
+lias_map[a].join_type == INNER}
+-> 1360         clause, _ = self._add_q(q_object, self.used_aliases)
+   1361         if clause:
+   1362             self.where.add(clause, AND)
+
+~\anaconda3\lib\site-packages\django\db\models\sql\query.py in _add_q
+(self, q_object, used_aliases, branch_negated, current_negated, allow
+_joins, split_subq, check_filterable)
+   1377         joinpromoter = JoinPromoter(q_object.connector, len(q
+_object.children), current_negated)
+   1378         for child in q_object.children:
+-> 1379             child_clause, needed_inner = self.build_filter(
+   1380                 child, can_reuse=used_aliases, branch_negated
+=branch_negated,
+   1381                 current_negated=current_negated, allow_joins=
+allow_joins,
+
+~\anaconda3\lib\site-packages\django\db\models\sql\query.py in build_
+filter(self, filter_expr, branch_negated, current_negated, can_reuse,
+ allow_joins, split_subq, reuse_with_filtered_relation, check_filtera
+ble)
+   1258         if not arg:
+   1259             raise FieldError("Cannot parse keyword query %r"
+% arg)
+-> 1260         lookups, parts, reffed_expression = self.solve_lookup
+_type(arg)
+   1261
+   1262         if check_filterable:
+
+~\anaconda3\lib\site-packages\django\db\models\sql\query.py in solve_
+lookup_type(self, lookup)
+   1084             if expression:
+   1085                 return expression_lookups, (), expression
+-> 1086         _, field, _, lookup_parts = self.names_to_path(lookup
+_splitted, self.get_meta())
+   1087         field_parts = lookup_splitted[0:len(lookup_splitted)
+- len(lookup_parts)]
+   1088         if len(lookup_parts) > 1 and not field_parts:
+
+~\anaconda3\lib\site-packages\django\db\models\sql\query.py in names_
+to_path(self, names, opts, allow_many, fail_on_missing)
+   1481                         *self._filtered_relations,
+   1482                     ])
+-> 1483                     raise FieldError("Cannot resolve keyword
+'%s' into field. "
+   1484                                      "Choices are: %s" % (nam
+e, ", ".join(available)))
+   1485                 break
+
+FieldError: Cannot resolve keyword 'title_contain' into field. Choice
+s are: author, author_id, created_date, id, published_date, text, tit
+le
+
+In [84]: Post.objects.filter(title__contains='일기').order_by('-crea
+    ...: ted_date')
+Out[84]: <QuerySet [<Post: 4 (미래일기)>, <Post: 3 (내일일기)>, <Post
+: 2 (오늘일기)>, <Post: 1 (어제일기)>]>
+
+In [85]: from django.shortcuts import get_object_or_404
+
+In [86]: get_object_or_404(Post,pk=1)
+Out[86]: <Post: 1 (어제일기)>
+
+In [87]: get_object_or_404(Post,pk=5)
+---------------------------------------------------------------------
+
+DoesNotExist                        Traceback (most recent call last)
+
+~\anaconda3\lib\site-packages\django\shortcuts.py in get_object_or_40
+4(klass, *args, **kwargs)
+     75     try:
+---> 76         return queryset.get(*args, **kwargs)
+     77     except queryset.model.DoesNotExist:
+
+~\anaconda3\lib\site-packages\django\db\models\query.py in get(self,
+*args, **kwargs)
+    428         if not num:
+--> 429             raise self.model.DoesNotExist(
+    430                 "%s matching query does not exist." %
+
+DoesNotExist: Post matching query does not exist.
+
+During handling of the above exception, another exception occurred:
+
+Http404                             Traceback (most recent call last)
+
+<ipython-input-87-2a9b37c679c8> in <module>
+----> 1 get_object_or_404(Post,pk=5)
+
+~\anaconda3\lib\site-packages\django\shortcuts.py in get_object_or_40
+4(klass, *args, **kwargs)
+     76         return queryset.get(*args, **kwargs)
+     77     except queryset.model.DoesNotExist:
+---> 78         raise Http404('No %s matches the given query.' % quer
+yset.model._meta.object_name)
+     79
+     80
+
+Http404: No Post matches the given query.
+
+In [88]: get_object_or_404(Post,pk=3)
+Out[88]: <Post: 3 (내일일기)>
+
+In [89]: type(get_object_or_404(Post,pk=3))
+Out[89]: blog.models.Post
+
+In [90]: get_object_or_404(Post,title='미래일기')
+Out[90]: <Post: 4 (미래일기)>
+
+In [91]: post4.delete()
+Out[91]: (1, {'blog.Post': 1})
+
+In [92]: post4
+Out[92]: <Post: None (미래일기)>
+
+In [93]: for p in Post.objects.all():
+    ...:     pritn(p)
+    ...:
+---------------------------------------------------------------------
+
+NameError                           Traceback (most recent call last)
+
+<ipython-input-93-d9db068c26f8> in <module>
+      1 for p in Post.objects.all():
+----> 2     pritn(p)
+      3
+
+NameError: name 'pritn' is not defined
+
+In [94]: for p in Post.objects.all():
+    ...:     print(p)
+    ...:
+1 (어제일기)
+2 (오늘일기)
+3 (내일일기)
+
+In [95]: post4
+Out[95]: <Post: None (미래일기)>
+
+In [96]: post4
+Out[96]: <Post: None (미래일기)>
+
+In [97]: for p in Post.objects.all():
+    ...:     print(p)
+    ...:
+1 (어제일기)
+2 (오늘일기)
+3 (내일일기)
+
+
