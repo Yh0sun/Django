@@ -1,0 +1,18 @@
+{% extends 'recipe/background.html' %}
+
+{% block block %}
+    {% for recipe in recipes %}
+        <div class="post">
+            <p>{{ recipe.author }}</p>
+            <h1><a href="{% url 'recipe_detail' pk=recipe.pk %}">{{ recipe.food_name }}</a> </h1>
+            <div>
+                <p>created : {{ recipe.created_date }}</p>
+            </div>
+            <a href="{% url 'recipe_detail' pk=recipe.pk %}">Comments: {{ recipe.approved_comments.count }}</a>
+        </div>
+    {% empty %}
+        <p>등록된 recipe가 없습니다.</p>
+    {% endfor %}
+
+    {% include 'recipe/pagination.html' with page=recipes%}
+{% endblock %}
