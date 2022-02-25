@@ -1,0 +1,10 @@
+{% extends 'customer/base.html' %}
+
+{% block content %}
+    <h1>New Customer</h1>
+    <form method="post" class="post-form">
+        {% csrf_token %}
+        {{ ctm.as_table }}
+    <button type="submit" class="save btn btn-default">save</button>
+    </form>
+{% endblock %}

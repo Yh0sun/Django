@@ -1,0 +1,13 @@
+{% extends 'customer/base.html' %}
+
+{% block content %}
+    {% for ctm in ctm_list %}
+        <div class ="post">
+            <h1><a href="{% url 'ctm_detail' pk=ctm.pk %}">{{ ctm.name }}</a> </h1>
+            <p>{{ ctm.email }}</p>
+            <div class="date">
+                <p> 생년월일 : {{ ctm.birthdate }}</p>
+            </div>
+        </div>
+    {% endfor %}
+{% endblock %}
