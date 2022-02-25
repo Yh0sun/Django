@@ -9,7 +9,7 @@ class PostModelForm(forms.ModelForm):
 
 class CommentModelForm(forms.ModelForm):
     class Meta:
-        model = Post
+        model = Comment
         fields = ('author', 'text',)
 
 def min_length_5_validator(value):
