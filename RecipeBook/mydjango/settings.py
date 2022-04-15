@@ -26,7 +26,10 @@ SECRET_KEY = 'zil6w+gmyqwor^y#q@+ueja@$b!9$m97-*9&@@197@+&xvgwo7'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    'localhost',
+    '54.93.62.114'
+]
 
 
 # Application definition
@@ -76,9 +79,13 @@ WSGI_APPLICATION = 'mydjango.wsgi.application'
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
 DATABASES = {
-   'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'django_db',  # DB명
+        'USER': 'cookmaster',  # 데이터베이스 계정
+        'PASSWORD': 'cookmaster',  # 계정 비밀번호
+        'HOST': 'djangomysql.czuta11hakx4.eu-central-1.rds.amazonaws.com',  # 데이테베이스 IP
+        'PORT': '3306',  # 데이터베이스 port
     }
 }
 
